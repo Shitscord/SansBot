@@ -20,5 +20,3 @@ async def on_message(message):
           await sansify.sans(message, client)
           print("sansified")
 client.run(tokens.discord)
-
-# To send message: constants.run_coro(client.send_message(message.channel, "message"), client)
