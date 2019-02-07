@@ -25,17 +25,16 @@ def sans_eye(filename,output):
                 for rawCoord in face_landmarks[facial_feature]:
                     xTot=xTot+int(rawCoord[0])
                     yTot=yTot+int(rawCoord[1])
-    if leftFound and rightFound:
-        coordCount=len(face_landmarks[facial_feature])
-        rxAverage=xTot//coordCount
-        ryAverage=yTot//coordCount
-        sansEye = Image.open("sanseye.png")
-        xDiff = (rxAverage - lxAverage) * 3
-        wpercent = (xDiff / float(sansEye.size[0]))
-        hsize = int((float(sansEye.size[1]) * float(wpercent)))
-        sansEye = sansEye.resize((xDiff, hsize), Image.ANTIALIAS)
-        pilImage.paste(sansEye, (rxAverage-(sansEye.size[0]//2),ryAverage-(sansEye.size[1]//2)), sansEye)
-        pilImage.save(output)
-        return("success")
-    else:
-        return("noface")
+        if leftFound and rightFound:
+            coordCount=len(face_landmarks[facial_feature])
+            rxAverage=xTot//coordCount
+            ryAverage=yTot//coordCount
+            sansEye = Image.open("sanseye.png")
+            xDiff = (rxAverage - lxAverage) * 3
+            wpercent = (xDiff / float(sansEye.size[0]))
+            hsize = int((float(sansEye.size[1]) * float(wpercent)))
+            sansEye = sansEye.resize((xDiff, hsize), Image.ANTIALIAS)
+            pilImage.paste(sansEye, (rxAverage-(sansEye.size[0]//2),ryAverage-(sansEye.size[1]//2)), sansEye)
+            pilImage.save(output)
+            return("success")
+    return("noface")
