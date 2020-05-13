@@ -1,8 +1,7 @@
-import sanslib, requests, random, constants, time, os, glob
+import sanslib, requests, random, constants, time, os, glob, discord
 
 async def sans(message, client):
     print("SansRequest")
-    await client.send_typing(message.channel)
     files = glob.glob('tempout/*')
     for f in files:
             os.remove(f)
@@ -10,19 +9,21 @@ async def sans(message, client):
     for f in files:
             os.remove(f)
     imageFound=False
-    if len(message.attachments) > 0:
-        if message.attachments[0]['url'].endswith((".png",".jpg",".jpeg")):
-            imgURL=message.attachments[0]['url']
+    if message.attachments:
+        print(message.attachments)
+        if message.attachments[0].url.endswith((".png",".jpg",".jpeg")):
+            imgURL=message.attachments[0].url
             imageFound=True
             print("SansImageAttached")
     if imageFound==False:
-        async for pastMess in client.logs_from(message.channel,limit=100, reverse=True):
+        async for pastMess in message.channel.history(limit=50, oldest_first=False):
             if len(pastMess.attachments) > 0:
-                attachURL=str(pastMess.attachments[0]['url'])
+                attachURL=str(pastMess.attachments[0].url)
                 if attachURL.endswith((".png",".jpg",".jpeg")):
                     imgURL=attachURL
                     imageFound=True
                     print("FoundSansImageInChannel")
+                    break
     if imageFound:    
         imageName=str(message.channel.id)+str(random.randint(1,99999999))
         if imgURL.endswith(".png"):
@@ -39,12 +40,12 @@ async def sans(message, client):
         print("SavedSansImage")
         time.sleep(.1)
         sansEye=sanslib.sans_eye(tempfilein, tempfileout)
+        print(sansEye)
         if sansEye!="noface":
-            constants.run_coro(client.send_file(message.channel, tempfileout), client)  
+            constants.run_coro(message.channel.send(file=discord.File(tempfileout)), client)  
             print("SentBetterSans")
             return(tempfilein, tempfileout)
-    constants.run_coro(client.send_message(message.channel, "No face or file found!"), client)
+    constants.run_coro(message.channel.send("No face or file found!"), client)
     print("FaceOrImageNotFount")
-    return(tempfilein, tempfileout)
             
             
